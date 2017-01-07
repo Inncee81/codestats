@@ -1,7 +1,7 @@
-# codestats
-API Client for [http://codestats.net](https://codestats.net)
+# Code::Stats
+An API Client written in PHP for [Code::Stats](https://codestats.net)
 
-List all languages with their XP
+howto list the level of an codestats user:
 ```PHP 
 require_once __DIR__ . '/vendor/autoload.php'; 
 
@@ -15,7 +15,7 @@ echo "user level :".  $xp->getLevel() . "<br />";
 ```
 
 
-List all languages with their XP
+List all languages with their XP:
 ```PHP
 foreach ($user->languages as $language) {
     echo "Language : " . $language->name . " <br />";
@@ -25,7 +25,7 @@ foreach ($user->languages as $language) {
 
 ```
 
-List all machines with their XP
+List all machines with their XP:
 ```PHP
 foreach ($user->machines as $machine) {
     echo "Machine : " . $machine->name . " <br />";
@@ -34,7 +34,7 @@ foreach ($user->machines as $machine) {
 }
 ```
 
-List all XP Pulses
+List all XP Pulses:
 ```PHP
 foreach ($user->history as $date => $xp) {
     echo "date : " . $date . " - " . $xp . " <br />";
