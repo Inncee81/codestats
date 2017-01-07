@@ -20,7 +20,6 @@ class User
      */
     public function __construct()
     {
-
     }
 
     /**
@@ -30,7 +29,6 @@ class User
      */
     public function get($username)
     {
-
         if (empty($username)) {
             throw new \InvalidArgumentException("No username was specified");
         }

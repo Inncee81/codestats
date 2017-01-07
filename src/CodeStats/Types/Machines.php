@@ -13,8 +13,17 @@ class Machines implements \IteratorAggregate
      * Internal array containing all the machines
      * @var array
      */
-    public $machines = [];
+    protected $machines = [];
 
+    /**
+     * Used for flyweight pattern when sorting machines
+     * @var bool
+     */
+    private $machinesSorted = false;
+
+    /**
+     * Machines constructor.
+     */
     public function __construct()
     {
     }
@@ -24,7 +33,28 @@ class Machines implements \IteratorAggregate
      */
     public function getIterator()
     {
+        $this->sort();
         return new \ArrayIterator($this->machines);
+    }
+
+    /**
+     * Sort machine array from hight to low
+     * @return array
+     */
+    public function sort()
+    {
+        //Flyweight because sorting can be heavy
+        if ($this->machinesSorted) {
+            return $this->machines;
+        }
+
+        //Because uasort is sorting the array by reference, we can do this
+        uasort($this->machines, function (XP $a, XP $b) {
+            //Sorting by biggest XP on top, high to low
+            return ($a->getXP() < $b->getXP());
+        });
+
+        return $this->machines;
     }
 
     /**
@@ -47,5 +77,8 @@ class Machines implements \IteratorAggregate
     public function add(XP $machine)
     {
         $this->machines[$machine->key] = $machine;
+        //Invalidate cache
+        $this->machinesSorted = false;
     }
+
 }

@@ -7,14 +7,39 @@ namespace CodeStats\Types;
  */
 class User
 {
-
+    /**
+     * @var string
+     */
     public $user = "";
+
+    /**
+     * @var int
+     */
     public $xp = 0;
+
+    /**
+     * @var int
+     */
     public $totalXP = 0;
+
+    /**
+     * @var int
+     */
     public $newXP = 0;
 
+    /**
+     * @var \CodeStats\Types\Languages
+     */
     public $languages = null;
+
+    /**
+     * @var \CodeStats\Types\Machines
+     */
     public $machines = null;
+
+    /**
+     * @var \CodeStats\Types\History
+     */
     public $history = null;
 
     /**
@@ -58,9 +83,11 @@ class User
         }
     }
 
+    /**
+     * @return XP
+     */
     public function getXP()
     {
-
         return new XP($this->user, $this->xp, $this->newXP);
     }
 }

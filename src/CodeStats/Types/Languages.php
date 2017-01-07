@@ -13,8 +13,17 @@ class Languages implements \IteratorAggregate
      * Array containing all the languages
      * @var array
      */
-    public $language = [];
+    protected $language = [];
 
+    /**
+     * Used for flyweight pattern when sorting languages
+     * @var bool
+     */
+    private $languageSorted = false;
+
+    /**
+     * Languages constructor.
+     */
     public function __construct()
     {
     }
@@ -24,7 +33,28 @@ class Languages implements \IteratorAggregate
      */
     public function getIterator()
     {
+        $this->sort();
         return new \ArrayIterator($this->language);
+    }
+
+    /**
+     * Sort the language array from hight to low
+     * @return array
+     */
+    public function sort()
+    {
+        //Flyweight because sorting can be heavy
+        if ($this->languageSorted) {
+            return $this->language;
+        }
+
+        //Because uasort is sorting the array by reference, we can do this
+        uasort($this->language, function (XP $a, XP $b) {
+            //Sorting by biggest XP on top, high to low
+            return ($a->getXP() < $b->getXP());
+        });
+
+        return $this->language;
     }
 
     /**
@@ -48,12 +78,10 @@ class Languages implements \IteratorAggregate
      */
     public function parse($languages)
     {
-
         foreach ((array)$languages as $name => $object) {
             $xp = new XP($name, $object->xps, $object->new_xps);
             $this->add($xp);
         }
-
     }
 
     /**
@@ -63,5 +91,7 @@ class Languages implements \IteratorAggregate
     public function add(XP $language)
     {
         $this->language[$language->key] = $language;
+        //Invalidate cache
+        $this->languageSorted = false;
     }
 }

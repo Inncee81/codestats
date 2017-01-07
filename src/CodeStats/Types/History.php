@@ -13,13 +13,17 @@ class History implements \IteratorAggregate
      * Array containing all the dates.
      * @var array
      */
-    public $dates = [];
-    /**
-     * Used for storing sorted dates
-     * @var array
-     */
-    public $datesSorted = [];
+    protected $dates = [];
 
+    /**
+     * Used for flyweight pattern when sorting dates
+     * @var bool
+     */
+    private $datesSorted = false;
+
+    /**
+     * History constructor.
+     */
     public function __construct()
     {
     }
@@ -29,7 +33,28 @@ class History implements \IteratorAggregate
      */
     public function getIterator()
     {
+        $this->sort();
         return new \ArrayIterator($this->dates);
+    }
+
+    /**
+     * Sort date array from low to high
+     * @return array
+     */
+    public function sort()
+    {
+        //Flyweight because sorting can be heavy
+        if ($this->datesSorted) {
+            return $this->dates;
+        }
+
+        //Because uksort is sorting the array by reference, we can do this
+        uksort($this->dates, function ($a, $b) {
+            //Sorting low to high
+            return (strtotime($a) > strtotime($b));
+        });
+
+        return $this->dates;
     }
 
     /**
@@ -41,7 +66,7 @@ class History implements \IteratorAggregate
     {
         $this->dates[$date] = $xp;
         //Invalidate cache
-        $this->datesSorted = [];
+        $this->datesSorted = false;
     }
 
     /**
@@ -53,7 +78,7 @@ class History implements \IteratorAggregate
     {
         $this->dates = array_merge((array)$this->dates, (array)$dates);
         //Invalidate cache
-        $this->datesSorted = [];
+        $this->datesSorted = false;
     }
 
     /**
@@ -83,32 +108,13 @@ class History implements \IteratorAggregate
     }
 
     /**
-     * Sort date array
-     * @return array
-     */
-    public function sort()
-    {
-        //Flyweight because sorting can be heavy
-        if (!empty($this->datesSorted)) {
-            return $this->datesSorted;
-        }
-
-        //Because uksort is sorting the array by reference
-        $this->datesSorted = $this->dates;
-        uksort($this->datesSorted, function ($a, $b) {
-            return (strtotime($a) > strtotime($b));
-        });
-
-        return $this->datesSorted;
-    }
-
-    /**
      * Gets the last date Codestats.net is updated
      * @return \dateTime
      */
     public function getLastDate()
     {
         $dates = $this->sort();
+
         end($dates);
         $date = new \dateTime(key($dates));
         return $date;
