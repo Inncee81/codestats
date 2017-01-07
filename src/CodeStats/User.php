@@ -74,7 +74,7 @@ class User
      */
     protected function url($username)
     {
-        return sprintf("https://codestats.net/api/users/%s", $username);
+        return sprintf("https://codestats.net/api/users/%s", urlencode($username));
     }
 
 }
