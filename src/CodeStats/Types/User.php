@@ -26,10 +26,6 @@ class User
         $this->parse($user);
     }
 
-    public function getXP() {
-
-        return new XP($this->user, $this->xp, $this->newXP);
-    }
     /**
      * Parses the info of the user
      * @param $user
@@ -60,5 +56,11 @@ class User
             $this->history = new History();
             $this->history->parse($user->dates);
         }
+    }
+
+    public function getXP()
+    {
+
+        return new XP($this->user, $this->xp, $this->newXP);
     }
 }
