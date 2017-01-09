@@ -128,31 +128,33 @@ class History implements \IteratorAggregate
      * @param $group
      * @return \ArrayIterator
      */
-    public function getGroupedBy($group) {
+    public function getGroupedBy($group)
+    {
 
         $dates = [];
 
         //Group by every item by their date (month of day of the week)
-        foreach($this->getIterator() as $key => $value) {
+        foreach ($this->getIterator() as $key => $value) {
 
             $datetime = new \DateTime($key);
 
-            if(self::MONTH == $group) {
+
+            if (self::MONTH === $group) {
                 $group = $datetime->format("n");
-            }else{
+            } else {
                 $group = $datetime->format("N");
             }
 
-            if(!isset($dates[$group])) {
-                $dates[$group] = ["total" => 0,"count" => 0];
+            if (!isset($dates[$group])) {
+                $dates[$group] = ["total" => 0, "count" => 0];
             }
             $dates[$group]["total"] = ($dates[$group]["total"] + $value);
             $dates[$group]["count"]++;
         }
 
         //We have a total and now calculate the average
-        foreach($dates as $group => $array) {
-            if(empty($dates[$group]["count"])) {
+        foreach ($dates as $group => $array) {
+            if (empty($dates[$group]["count"])) {
                 continue;
             }
 
@@ -160,7 +162,6 @@ class History implements \IteratorAggregate
         }
 
         ksort($dates);
-
         return new \ArrayIterator($dates);
     }
 
