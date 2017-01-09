@@ -9,6 +9,9 @@ namespace CodeStats\Types;
 class History implements \IteratorAggregate
 {
 
+    const DAY = 1;
+    const MONTH = 2;
+
     /**
      * Array containing all the dates.
      * @var array
@@ -119,4 +122,46 @@ class History implements \IteratorAggregate
         $date = new \dateTime(key($dates));
         return $date;
     }
+
+    /**
+     * Return an ArrayIterator group by Argument
+     * @param $group
+     * @return \ArrayIterator
+     */
+    public function getGroupedBy($group) {
+
+        $dates = [];
+
+        //Group by every item by their date (month of day of the week)
+        foreach($this->getIterator() as $key => $value) {
+
+            $datetime = new \DateTime($key);
+
+            if(self::MONTH == $group) {
+                $group = $datetime->format("n");
+            }else{
+                $group = $datetime->format("N");
+            }
+
+            if(!isset($dates[$group])) {
+                $dates[$group] = ["total" => 0,"count" => 0];
+            }
+            $dates[$group]["total"] = ($dates[$group]["total"] + $value);
+            $dates[$group]["count"]++;
+        }
+
+        //We have a total and now calculate the average
+        foreach($dates as $group => $array) {
+            if(empty($dates[$group]["count"])) {
+                continue;
+            }
+
+            $dates[$group]["average"] = round(($dates[$group]["total"] / $dates[$group]["count"]));
+        }
+
+        ksort($dates);
+
+        return new \ArrayIterator($dates);
+    }
+
 }
