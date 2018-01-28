@@ -6,7 +6,7 @@
  * Date: 31-10-2016
  * Time: 20:00
  */
-class TestCase extends \PHPUnit_Framework_TestCase
+class TestCase extends \PHPUnit\Framework\TestCase
 {
 
 
